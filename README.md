@@ -5,7 +5,7 @@
    <a href="https://track-knowledge-propagation.github.io/" target="_blank">🌐 Website</a> | <a href="https://aclanthology.org/2026.eacl-long.273/" target="_blank">📃 Paper </a> | <a href="https://huggingface.co/datasets/yiyangfengSBU/track/" target="_blank">🤗 Dataset </a> | <a href="" target="_blank">𝕏 X (Twitter)</a>
 </p>
 
-This is the official implementation for the paper ["Tracking the Limits of Knowledge Propagation: How LLMs Fail at Multi-Step Reasoning with Conflicting Knowledge"](), which explores how LLMs propagate new knowledge through multi-step reasoning when it conflicts with the model's initial parametric knowledge.
+This is the official implementation for the paper ["Tracking the Limits of Knowledge Propagation: How LLMs Fail at Multi-Step Reasoning with Conflicting Knowledge"](https://aclanthology.org/2026.eacl-long.273/), which explores how LLMs propagate new knowledge through multi-step reasoning when it conflicts with the model's initial parametric knowledge. Our paper is accepted at EACL 2026 (Main, Virtual Oral Presentation).
 
 ![illustration](img/intro.png)
 
