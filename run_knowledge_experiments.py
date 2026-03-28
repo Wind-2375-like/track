@@ -143,8 +143,10 @@ def generate_commands(args):
         required_mem = 0 if is_cpu else get_required_memory(model)
         if not is_cpu:
             has_gpu_jobs = True
-            
+
         cmd_list = base_script + ["--task_name", task, "--model_name", model]
+        if getattr(args, 'load_from_huggingface', False):
+            cmd_list += ["--load_from_huggingface"]
         commands.append({
             "cmd": cmd_list, "task": task, "model": model,
             "required_mem": required_mem, "is_cpu": is_cpu,
@@ -279,7 +281,9 @@ if __name__ == "__main__":
     parser.add_argument('--max-workers', type=int, default=10, help='Maximum number of parallel processes.')
     parser.add_argument('--max-retries', type=int, default=10000, help='Max retries for ANY failed process.')
     parser.add_argument('--retry-delay', type=int, default=60, help='Seconds to wait before re-queueing a failed job.')
-    
+    parser.add_argument('--load_from_huggingface', action='store_true',
+                        help='Load dataset from HuggingFace Hub instead of local pkl file.')
+
     args = parser.parse_args()
     # Call the main function
     run_scheduler(args)

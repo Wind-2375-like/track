@@ -1,17 +1,18 @@
 import pickle
-from datasets import Dataset # Main class to inherit from
+from datasets import Dataset, load_dataset  # Main class to inherit from
 import pyarrow as pa       # For creating Arrow tables
 
 class ProbeDataset(Dataset):
     """
     A class to represent a probe dataset.
-    Reads from .pkl file containing dictionaries with a key `probe_questions`
-    (list of dictionaries with keys `question` and `answer`),
-    Flattens it to a list of dictionaries with keys
-    - `id`: index of the original complex question structure in the input list
-    - `question`: the question text
-    - `answer`: the answer text
-    - `complex_question_id`: the 'id' field from the original complex question structure
+    Reads from .pkl file (or HuggingFace Hub) containing dictionaries with a key
+    `probe_questions` (list of dicts with keys `question`, `answer`, `knowledge`).
+    Flattens it to a list of dictionaries with keys:
+    - `id`: sequential index
+    - `question`: the probing question text (q_i)
+    - `answer`: the probing answer text (a_i)
+    - `knowledge`: the atomic fact text (K_q)
+    - `complex_question_id`: index of the parent complex question
     """
 
     def __init__(self, path: str):
@@ -32,6 +33,45 @@ class ProbeDataset(Dataset):
         # internally by the parent `datasets.Dataset` class.
         # The `__len__` and `__getitem__` methods are inherited from `datasets.Dataset`
         # and will operate correctly on the Arrow table.
+
+    @classmethod
+    def from_huggingface(cls, task_name: str, repo_id: str = 'yiyangfengSBU/track', token: str = None):
+        """
+        Load a ProbeDataset from the HuggingFace Hub instead of a local pkl file.
+
+        Args:
+            task_name (str): One of 'grow' (maps to wiki config), 'code', or 'math'.
+            repo_id (str): HuggingFace dataset repo id.
+            token (str): Optional HuggingFace API token.
+        Returns:
+            ProbeDataset instance
+        """
+        # grow → wiki on HuggingFace
+        config_name = 'wiki' if task_name == 'grow' else task_name
+        hf_ds = load_dataset(repo_id, name=config_name, split='test', token=token)
+
+        raw_data_list = []
+        for row in hf_ds:
+            probe_questions = [
+                {'question': q, 'answer': a, 'knowledge': k}
+                for q, a, k in zip(
+                    row['probing_questions'],
+                    row['probing_answers'],
+                    row['atomic_facts'],
+                )
+            ]
+            raw_data_list.append({
+                'multihop_question': row['question'],
+                'multihop_answer': row['answer'],
+                'probe_questions': probe_questions,
+            })
+
+        flattened = cls._s_flatten_raw_data(raw_data_list)
+        arrow_table = cls._s_convert_records_to_arrow_table(flattened)
+        # Bypass __init__(path) and initialize the parent Dataset directly
+        instance = object.__new__(cls)
+        Dataset.__init__(instance, arrow_table=arrow_table)
+        return instance
 
     @staticmethod
     def _s_load_raw_data_from_pkl(path: str):

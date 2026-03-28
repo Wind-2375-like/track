@@ -18,6 +18,30 @@ Our Tʀᴀᴄᴋ benchmark (Testing Reasoning Amid Conflicting Knowledge) spans 
 2. Performance further degrades with more updated facts.
 3. The failure stems from both inability to faithfully integrate updated facts and flawed reasoning even when knowledge is integrated
 
+## Dataset
+
+The TRACK benchmark is available on [HuggingFace Datasets](https://huggingface.co/datasets/yiyangfengSBU/track) with three configs: `wiki`, `code`, and `math` (500 examples each).
+
+Each example contains five fields aligned with the paper:
+
+| Field | Paper notation | Description |
+|---|---|---|
+| `question` | $q$ | Complex multi-step reasoning question |
+| `answer` | $a$ | Final answer |
+| `probing_questions` | $q_i$ | List of probing questions |
+| `probing_answers` | $a_i$ | List of probing answers |
+| `atomic_facts` | $K_q$ | List of required atomic facts |
+
+### Load with the `datasets` library
+
+```python
+from datasets import load_dataset
+
+wiki = load_dataset("yiyangfengSBU/track", name="wiki", split="test")
+code = load_dataset("yiyangfengSBU/track", name="code", split="test")
+math = load_dataset("yiyangfengSBU/track", name="math", split="test")
+```
+
 ## Setup
 
 We use Python 3.12.
@@ -50,6 +74,8 @@ In `api_key/config.json`, you need to provide your API keys for the models you w
 
 ## Data Collection
 
+The benchmark data is available directly from HuggingFace (see [Dataset](#dataset) section above). Alternatively, you can regenerate it locally:
+
 ```python
 python scripts/testset/grow_collection.py --data_size 500 --api_config_file ./api_key/config.json
 python scripts/testset/code_collection.py --data_size 500 --api_config_file ./api_key/config.json
@@ -69,6 +95,7 @@ python run_knowledge_experiments.py \
     --model_names llama-3.2-1b llama-3.2-3b llama-3.2-11b qwen-3-1.7b qwen-3-4b qwen-3-8b gpt-4.1-mini o4-mini \    # List of ALL model names to run.
     --cpu-only-models gpt-4.1-mini o4-mini \                                                                        # List of model names that are CPU-only
     --task_names grow code math \                                                                                   # List of task names. "grow" means WIKI (previously Graph Reasoning On Wikidata)
+    --load_from_huggingface \                                                                                       # Optional: load dataset from HuggingFace Hub instead of local pkl file
 ```
 
 To automatically annotate the probing results, you can use the following command:

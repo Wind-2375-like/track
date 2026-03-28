@@ -27,6 +27,8 @@ def parse_args():
     parser.add_argument('--top_p', type=float, default=0.7, help="Top-p sampling for the model")
     parser.add_argument('--max_tokens', type=int, default=4096, help="Maximum tokens for the model")
     parser.add_argument('--num_responses', type=int, default=10, help="Number of responses to generate")
+    parser.add_argument('--load_from_huggingface', action='store_true',
+                        help="Load dataset from HuggingFace Hub (yiyangfengSBU/track) instead of local pkl file")
     return parser.parse_args()
 
 
@@ -83,7 +85,10 @@ if __name__ == "__main__":
     args = parse_args()
     
     # Load the probe dataset
-    probe_dataset = ProbeDataset(f'data/{args.task_name}/test_{args.data_size}.pkl')
+    if args.load_from_huggingface:
+        probe_dataset = ProbeDataset.from_huggingface(args.task_name)
+    else:
+        probe_dataset = ProbeDataset(f'data/{args.task_name}/test_{args.data_size}.pkl')
     
     # Load the API key from the configuration file
     with open(args.api_config_file, 'r') as f:
