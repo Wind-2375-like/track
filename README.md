@@ -133,13 +133,24 @@ python run_reasoning_evaluations.py \
 If you find this repository useful, please consider citing our paper:
 
 ```
-@misc{feng2026trackinglimitsknowledgepropagation,
-      title={Tracking the Limits of Knowledge Propagation: How LLMs Fail at Multi-Step Reasoning with Conflicting Knowledge}, 
-      author={Yiyang Feng and Zeming Chen and Haotian Wu and Jiawei Zhou and Antoine Bosselut},
-      year={2026},
-      eprint={2601.15495},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2601.15495}, 
+@inproceedings{feng-etal-2026-tracking,
+    title = "Tracking the Limits of Knowledge Propagation: How {LLM}s Fail at Multi-Step Reasoning with Conflicting Knowledge",
+    author = "Feng, Yiyang  and
+      Chen, Zeming  and
+      Wu, Haotian  and
+      Zhou, Jiawei  and
+      Bosselut, Antoine",
+    editor = "Demberg, Vera  and
+      Inui, Kentaro  and
+      Marquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 19th Conference of the {E}uropean Chapter of the {A}ssociation for {C}omputational {L}inguistics (Volume 1: Long Papers)",
+    month = mar,
+    year = "2026",
+    address = "Rabat, Morocco",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.eacl-long.273/",
+    doi = "10.18653/v1/2026.eacl-long.273",
+    pages = "5813--5847",
+    ISBN = "979-8-89176-380-7",
 }
 ```
